@@ -16,9 +16,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_compile_definitions(Dev)
 
-add_executable(Naloga1 Tomic_Danijel_1002619122_N1.cpp Naloga1.h)
+add_executable(Naloga1 Naloga1/Tomic_Danijel_1002619122_N1.cpp Naloga1/Naloga1.h)
 
-add_executable(Naloga1Test Naloga1Test.cpp Tomic_Danijel_1002619122_N1.cpp Naloga1.h)
+add_executable(Naloga1Test Naloga1/Naloga1Test.cpp Naloga1/Tomic_Danijel_1002619122_N1.cpp Naloga1/Naloga1.h)
 target_link_libraries(Naloga1Test PRIVATE Catch2::Catch2WithMain)
 target_compile_definitions(Naloga1Test PRIVATE DTTESTING)
 

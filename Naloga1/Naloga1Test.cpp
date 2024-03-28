@@ -75,14 +75,14 @@ TEST_CASE("poisciZBisekcijo functionality") {
 
 bool is_descending(const int* arr, int n) {
     for (int i = 0; i < n-1; ++i) {
-        if (arr[i] > arr[i + 1]) {
+        if (arr[i] < arr[i + 1]) {
             return false;
         }
     }
     return true;
 }
 
-bool same_elements(const int* original, const int* sorted, int n) {
+bool same_elements(const int original[], const int sorted[], int n) {
    for(int i = 0; i<n; i++){
        if(original[i] != sorted[i])
            return false;
@@ -94,12 +94,13 @@ TEST_CASE("urediSPrameni functionality tests", "[urediSPrameni]") {
     SECTION("Sorts in descending order") {
         using namespace std;
         int arr[] = {1, 5, 2, 4, 3};
-        int n = sizeof(arr) / sizeof(arr[0]);
+        int n = 5;
         int* sorted = urediSPrameni(arr, n);
-        for(int i = 0; i<n; i++){
-            cout << sorted[i] << endl;
-        }
-        REQUIRE(is_descending(sorted, n));
+        int sortedWorking[n];
+        std::copy(arr, arr+n, sortedWorking);
+        std::sort(arr, arr+n);
+        std::reverse(arr, arr+n);
+        REQUIRE(same_elements(sorted, sortedWorking, n));
         delete[] sorted; // Assuming the function allocates new memory
     }
 
