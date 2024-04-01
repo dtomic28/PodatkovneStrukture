@@ -47,7 +47,7 @@ int* merge(int* sortedArray, int sortedSize, int* strandArray, int strandSize){
     int indexSorted = 0, indexStrand = 0, indexResult = 0;
 
     while (indexSorted < sortedSize && indexStrand < strandSize) {
-        if (sortedArray[indexSorted] > strandArray[indexStrand]) {
+        if (sortedArray[indexSorted] >= strandArray[indexStrand]) {
             result[indexResult++] = sortedArray[indexSorted++];
         } else {
             result[indexResult++] = strandArray[indexStrand++];
@@ -72,6 +72,25 @@ void reverseArray(int* arr, int size){
     }
 }
 
+void removeFromArray(int* &arr, int &arrSize, const int* indicesToRemove, int numIndices) {
+    if (numIndices <= 0 || arrSize <= 0) return;
+
+    int newSize = arrSize - numIndices;
+
+    int* newArr = new int[newSize];
+
+    for (int i = 0, j = 0, removalIndex = 0; i < arrSize; ++i) {
+        if (removalIndex < numIndices && i == indicesToRemove[removalIndex]) {
+            ++removalIndex;
+        } else {
+            newArr[j++] = arr[i];
+        }
+    }
+
+    delete[] arr;
+    arr = newArr;
+    arrSize = newSize;
+}
 
 int* urediSPrameni(int* a, int n)
 {
@@ -79,34 +98,42 @@ int* urediSPrameni(int* a, int n)
         return NULL;
     }
 
+    int* arrCpy = new int[n];
+    for(int i = 0; i<n; i++){
+        arrCpy[i] = a[i];
+    }
+
     int* sorted = new int[n];
     int sortedSize = 0;
 
     while (n > 0) {
         int* strand = new int[n];
+        int* removeIndex = new int[n];
+        int removeIndexSize = 0;
         int strandSize = 1;
-        strand[0] = a[0];
-
-        int last = a[0];
+        strand[0] = arrCpy[0];
+        removeIndex[removeIndexSize++] = 0;
+        int last = arrCpy[0];
         int index = 1;
 
         for (int i = 1; i < n; i++) {
-            if (a[i] >= last) {
-                strand[strandSize++] = a[i];
-                last = a[i];
+            if (arrCpy[i] <= last) {
+                strand[strandSize++] = arrCpy[i];
+                last = arrCpy[i];
+                removeIndex[removeIndexSize++] = i;
             } else {
-                a[index++] = a[i];
+                a[index++] = arrCpy[i];
             }
         }
         int* newSorted = merge(sorted, sortedSize, strand, strandSize);
         delete[] sorted;
         sorted = newSorted;
         sortedSize += strandSize;
-        n = index - 1;
-
+        removeFromArray(arrCpy, n, removeIndex, removeIndexSize);
+        delete[] removeIndex;
         delete[] strand;
     }
-    reverseArray(sorted, sortedSize);
+    delete[] arrCpy;
     return sorted;
 }
 
