@@ -5,130 +5,127 @@
 #include <catch2/catch_all.hpp>
 #include <iostream>
 #include "Naloga1.h"
+#include <array>
+#include <ctime>
 
 using namespace std;
 
-TEST_CASE("poisci functionality") {
-    int testArray[] = {5, 3, 1, 4, 2, 1};
-    int n = sizeof(testArray) / sizeof(testArray[0]);
-    int largeArraySize = 10000000;
-    int *largeArray = new int[largeArraySize];
-    std::fill_n(largeArray, largeArraySize
-                            - 1, 1);
-    largeArray[largeArraySize - 1] = 2; // Ensure the function works with large arrays
+TEST_CASE("Poisci()") {
+    array<int, 6> arr = {10, 5 ,18, 5,3, 5};
 
-    SECTION("returns first occurrence in array") {
-        REQUIRE(poisci(1, testArray, n)
-                == 2);
+    SECTION("Returns first occurance in array"){
+        auto indexOf = find(arr.begin(), arr.end(),5);
+        auto indexOfTest = poisci(5, &arr[0], arr.size());
+        REQUIRE(indexOf-&arr[0] == indexOfTest);
     }
 
-    SECTION("does not return error on empty array") {
-        REQUIRE(poisci(1, nullptr, 0)
-                == -1);
+    SECTION("Doesent throw at n=0"){
+        REQUIRE_NOTHROW(poisci(5, &arr[0], 0));
     }
 
-    SECTION("returns correct index of the found element in the array") {
-        REQUIRE(poisci(4, testArray, n)
-                == 3);
+    SECTION("Doesent alter input array"){
+        array<int, 6> arrCpy;
+        std::copy(arr.begin(), arr.end(), &arrCpy[0]);
+        REQUIRE(arrCpy.size() == 6);
+        poisci(5, &arr[0], arr.size());
+        REQUIRE(arrCpy == arr);
     }
 
-    SECTION("works for 10 million elements") {
-        REQUIRE(poisci(2, largeArray, largeArraySize)
-                == largeArraySize - 1);
+    SECTION("Works with 10,000,000 elements"){
+        const int arraySize = 10000000;
+        std::vector<int> numbers(arraySize);
+
+        // Fill the array with numbers from 1 to arraySize
+        for (int i = 0; i < arraySize; ++i) {
+            numbers[i] = i + 1;
+        }
+
+        REQUIRE(poisci(999999, &numbers[0], numbers.size()) == 999998);
     }
 
-    delete[]
-            largeArray; // Clean up
+    SECTION("Returns -1 on not found"){
+        REQUIRE(poisci(123, &arr[0], arr.size()) == -1);
+    }
 }
 
 TEST_CASE("poisciZBisekcijo functionality") {
-    int testArray[] = {1, 2, 3, 4, 5, 3};
-    int n = sizeof(testArray) / sizeof(testArray[0]);
-    int largeArraySize = 10000000;
-    int *largeArray = new int[largeArraySize];
-    std::fill_n(largeArray, largeArraySize,
-                2);
-    largeArray[largeArraySize / 2] = 1; // Ensure a mid-point for binary search
+    array<int, 6> arr = {3,5,5,5,10,18};
+    reverse(arr.begin(), arr.end());
 
-    SECTION("returns correct index of the found element in a sorted array") {
-        std::sort(testArray, testArray
-                             + n); // Ensure sorted for binary search
-        REQUIRE(poisciZBisekcijo(3, testArray, n)
-                >= 0); // Specific index might vary based on implementation
+    SECTION("Returns first occurance in array"){
+        auto indexOf = find(arr.begin(), arr.end(),5);
+        auto indexOfTest = poisciZBisekcijo(5, &arr[0], arr.size());
+        REQUIRE(indexOf-&arr[0] == indexOfTest);
     }
 
-    SECTION("does not return error on empty array") {
-        REQUIRE(poisciZBisekcijo(3, nullptr, 0)
-                == -1);
+    SECTION("Doesent throw at n=0"){
+        REQUIRE_NOTHROW(poisciZBisekcijo(5, &arr[0], 0));
     }
 
-    SECTION("works for 10 million elements") {
-        std::sort(largeArray, largeArray
-                              + largeArraySize); // Ensure sorted for binary search
-        std::reverse(largeArray, largeArray + largeArraySize);
-        REQUIRE(poisciZBisekcijo(1, largeArray, largeArraySize)
-                == largeArraySize-1);
+    SECTION("Doesent alter input array"){
+        array<int, 6> arrCpy;
+        std::copy(arr.begin(), arr.end(), &arrCpy[0]);
+        REQUIRE(arrCpy.size() == 6);
+        poisci(5, &arr[0], arr.size());
+        REQUIRE(arrCpy == arr);
     }
 
-    delete[] largeArray; // Clean up
-}
+    SECTION("Works with 10,000,000 elements"){
+        const int arraySize = 10000000;
+        std::vector<int> numbers(arraySize);
 
-bool is_descending(const int* arr, int n) {
-    for (int i = 0; i < n-1; ++i) {
-        if (arr[i] < arr[i + 1]) {
-            return false;
+        // Fill the array with numbers from 1 to arraySize
+        for (int i = 0; i < arraySize; ++i) {
+            numbers[i] = i + 1;
         }
-    }
-    return true;
-}
+        reverse(numbers.begin(), numbers.end());
 
-bool same_elements(const int original[], const int sorted[], int n) {
-   for(int i = 0; i<n; i++){
-       if(original[i] != sorted[i])
-           return false;
-   }
-   return true;
+        REQUIRE(poisciZBisekcijo(999999, &numbers[0], numbers.size()) == arraySize-999999);
+    }
+
+    SECTION("Returns -1 on not found"){
+        REQUIRE(poisciZBisekcijo(123, &arr[0], arr.size()) == -1);
+    }
+
+    SECTION("Faster than poisci()"){
+        const int arraySize = 10000000;
+        std::vector<int> numbers(arraySize);
+
+        // Fill the array with numbers from 1 to arraySize
+        for (int i = 0; i < arraySize; ++i) {
+            numbers[i] = i + 1;
+        }
+        reverse(numbers.begin(), numbers.end());
+
+        auto start1 = clock();
+        poisciZBisekcijo(999999, &numbers[0], numbers.size());
+        auto stop1 = clock();
+
+        double duration1 = (double)(stop1-start1)/CLOCKS_PER_SEC;
+
+        auto start2 = clock();
+        poisci(999999, &numbers[0], numbers.size());
+        auto stop2 = clock();
+
+        double duration2 = (double)(stop2-start2)/CLOCKS_PER_SEC;
+        REQUIRE(duration1<duration2);
+    }
 }
 
 TEST_CASE("urediSPrameni functionality tests", "[urediSPrameni]") {
-    SECTION("Sorts in descending order") {
-        using namespace std;
-        int arr[] = {1, 5, 2, 4, 3};
-        int n = 5;
-        int* sorted = urediSPrameni(arr, n);
-        int sortedWorking[n];
-        std::copy(arr, arr+n, sortedWorking);
-        std::sort(arr, arr+n);
-        std::reverse(arr, arr+n);
-        REQUIRE(same_elements(sorted, sortedWorking, n));
-        delete[] sorted; // Assuming the function allocates new memory
+    int arr[] = {10, 5 ,18, 5,3, 5};
+
+    array<int, 6> sortedReverse = {3,5,5,5,10,18};
+    reverse(sortedReverse.begin(), sortedReverse.end());
+
+    SECTION("Sorted set is descending"){
+        int* sorted = urediSPrameni(arr, 6);
+        for(int i = 0; i<6; i++){
+            INFO(sorted);
+            CHECK(sortedReverse[i] == sorted[i]);
+            sorted++;
+        }
     }
 
-    SECTION("Retains all original elements") {
-        int arr[] = {3, 1, 4, 1, 5, 9, 2, 6, 5, 3};
-        int n = sizeof(arr) / sizeof(arr[0]);
-        int arrNew[n];
-        std::copy(arr, arr+n, arrNew);
-        int* sorted = urediSPrameni(arr, n);
-        REQUIRE(same_elements(arr, arrNew, n));
-        delete[] sorted; // Assuming the function allocates new memory
-    }
-
-    SECTION("Handles empty array") {
-        int* sorted = urediSPrameni(nullptr, 0);
-        REQUIRE(sorted == nullptr); // Assuming the function returns nullptr for n = 0
-        // No need to delete[] sorted if nullptr is returned for empty input
-    }
-
-    SECTION("Can process large array") {
-        int n = 10000;
-        int* arr = new int[n];
-        // Fill the array with some pattern or random values
-        for (int i = 0; i < n; ++i) arr[i] = i % 100; // Example pattern
-        int* sorted = urediSPrameni(arr, n);
-        REQUIRE(is_descending(sorted, n));
-        delete[] arr;
-        delete[] sorted;
-    }
 }
 

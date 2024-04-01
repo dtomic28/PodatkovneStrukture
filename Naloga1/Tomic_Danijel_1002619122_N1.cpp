@@ -20,14 +20,14 @@ int poisci(int el, int* a, int n)
 int binarySearch(const int* arr, int low, int high, int el, int n){
     if (high >= low) {
         int mid = low + (high - low) / 2;
-        // Check if the mid element is the first occurrence of x
+        //Smo nasli element na sredini
         if ((mid == 0 || el < arr[mid - 1]) && arr[mid] == el)
             return mid;
+        //Element se nahaja na levi strani
         else if (el < arr[mid])
-            // Go right since the right side contains the smaller elements
             return binarySearch(arr, (mid + 1), high, el, n);
+        //Element se nahaja na desni strani
         else
-            // Go left since the left side contains the larger elements
             return binarySearch(arr, low, (mid - 1), el, n);
     }
     return -1;
@@ -42,24 +42,25 @@ int poisciZBisekcijo(int el, int* a, int n)
 	return -1;
 }
 
-int* merge(int* a, int sizeA, int* b, int sizeB){
-    int* result = new int[sizeA + sizeB];
-    int indexA = 0, indexB = 0, indexResult = 0;
+int* merge(int* sortedArray, int sortedSize, int* strandArray, int strandSize){
+    int* result = new int[sortedSize + strandSize];
+    int indexSorted = 0, indexStrand = 0, indexResult = 0;
 
-    while (indexA < sizeA && indexB < sizeB) {
-        if (a[indexA] > b[indexB]) {
-            result[indexResult++] = a[indexA++];
+    while (indexSorted < sortedSize && indexStrand < strandSize) {
+        if (sortedArray[indexSorted] > strandArray[indexStrand]) {
+            result[indexResult++] = sortedArray[indexSorted++];
         } else {
-            result[indexResult++] = b[indexB++];
+            result[indexResult++] = strandArray[indexStrand++];
         }
     }
 
-    // Copy any remaining elements
-    while (indexA < sizeA) {
-        result[indexResult++] = a[indexA++];
+    //Dokler ni sortedArray prazen
+    while (indexSorted < sortedSize) {
+        result[indexResult++] = sortedArray[indexSorted++];
     }
-    while (indexB < sizeB) {
-        result[indexResult++] = b[indexB++];
+    //Dokler ni strandArray prazen
+    while (indexStrand < strandSize) {
+        result[indexResult++] = strandArray[indexStrand++];
     }
 
     return result;
