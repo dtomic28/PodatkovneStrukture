@@ -9,5 +9,4 @@ int poisci(int el, int* a, int n);
 int poisciZBisekcijo(int el, int* a, int n);
 int* urediSPrameni(int* a, int n);
 
-
-#endif //PODATKOVNESTRUKTURE_NALOGA1_H
+#endif  // PODATKOVNESTRUKTURE_NALOGA1_H

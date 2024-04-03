@@ -9,16 +9,19 @@ using namespace std;
 
 int poisci(int el, int* a, int n)
 {
-	for(int i = 0; i<n;i++){
-        if(a[i] == el)
+    for (int i = 0; i < n; i++)
+    {
+        if (a[i] == el)
             return i;
     }
 
-	return -1;
+    return -1;
 }
 
-int binarySearch(const int* arr, int low, int high, int el, int n){
-    if (high >= low) {
+int binarySearch(const int* arr, int low, int high, int el, int n)
+{
+    if (high >= low)
+    {
         int mid = low + (high - low) / 2;
         // Check if the mid element is the first occurrence of x
         if ((mid == 0 || el < arr[mid - 1]) && arr[mid] == el)
@@ -35,53 +38,64 @@ int binarySearch(const int* arr, int low, int high, int el, int n){
 
 int poisciZBisekcijo(int el, int* a, int n)
 {
-    if (n>0){
-        return binarySearch(a, 0, n-1, el, n);
+    if (n > 0)
+    {
+        return binarySearch(a, 0, n - 1, el, n);
     }
 
-	return -1;
+    return -1;
 }
 
-int* merge(int* a, int sizeA, int* b, int sizeB){
+int* merge(int* a, int sizeA, int* b, int sizeB)
+{
     int* result = new int[sizeA + sizeB];
     int indexA = 0, indexB = 0, indexResult = 0;
 
-    while (indexA < sizeA && indexB < sizeB) {
-        if (a[indexA] > b[indexB]) {
+    while (indexA < sizeA && indexB < sizeB)
+    {
+        if (a[indexA] > b[indexB])
+        {
             result[indexResult++] = a[indexA++];
-        } else {
+        }
+        else
+        {
             result[indexResult++] = b[indexB++];
         }
     }
 
     // Copy any remaining elements
-    while (indexA < sizeA) {
+    while (indexA < sizeA)
+    {
         result[indexResult++] = a[indexA++];
     }
-    while (indexB < sizeB) {
+    while (indexB < sizeB)
+    {
         result[indexResult++] = b[indexB++];
     }
 
     return result;
 }
 
-void reverseArray(int* arr, int size){
-    for(int i = 0; i<size/2; i++){
-        swap(arr[i], arr[size-1-i]);
+void reverseArray(int* arr, int size)
+{
+    for (int i = 0; i < size / 2; i++)
+    {
+        swap(arr[i], arr[size - 1 - i]);
     }
 }
 
-
 int* urediSPrameni(int* a, int n)
 {
-    if(n <= 0){
+    if (n <= 0)
+    {
         return NULL;
     }
 
     int* sorted = new int[n];
     int sortedSize = 0;
 
-    while (n > 0) {
+    while (n > 0)
+    {
         int* strand = new int[n];
         int strandSize = 1;
         strand[0] = a[0];
@@ -89,11 +103,15 @@ int* urediSPrameni(int* a, int n)
         int last = a[0];
         int index = 1;
 
-        for (int i = 1; i < n; i++) {
-            if (a[i] >= last) {
+        for (int i = 1; i < n; i++)
+        {
+            if (a[i] >= last)
+            {
                 strand[strandSize++] = a[i];
                 last = a[i];
-            } else {
+            }
+            else
+            {
                 a[index++] = a[i];
             }
         }
@@ -109,16 +127,15 @@ int* urediSPrameni(int* a, int n)
     return sorted;
 }
 
-
 #ifndef DTTESTING
 int main()
 {
     // Priprava vhodnih podatkov
-    int vhod[] = { -10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10 };
+    int vhod[] = {-10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10};
     const int dolzina = sizeof(vhod) / sizeof(int);
 
     // Priprava izhodnih podatkov
-    int pricakovan_izhod[] = { 10, 8, 6, 4,2, 0, -2, -4, -6, -8, -10 };
+    int pricakovan_izhod[] = {10, 8, 6, 4, 2, 0, -2, -4, -6, -8, -10};
 
     // Klic testirane metode
     int* dobljen_izhod = urediSPrameni(vhod, dolzina);
