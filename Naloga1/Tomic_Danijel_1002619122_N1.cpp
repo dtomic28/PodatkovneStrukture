@@ -9,28 +9,25 @@ using namespace std;
 
 int poisci(int el, int* a, int n)
 {
-    for (int i = 0; i < n; i++)
-    {
-        if (a[i] == el)
+	for(int i = 0; i<n;i++){
+        if(a[i] == el)
             return i;
     }
 
-    return -1;
+	return -1;
 }
 
-int binarySearch(const int* arr, int low, int high, int el, int n)
-{
-    if (high >= low)
-    {
+int binarySearch(const int* arr, int low, int high, int el, int n){
+    if (high >= low) {
         int mid = low + (high - low) / 2;
-        // Check if the mid element is the first occurrence of x
+        //Smo nasli element na sredini
         if ((mid == 0 || el < arr[mid - 1]) && arr[mid] == el)
             return mid;
+        //Element se nahaja na levi strani
         else if (el < arr[mid])
-            // Go right since the right side contains the smaller elements
             return binarySearch(arr, (mid + 1), high, el, n);
+        //Element se nahaja na desni strani
         else
-            // Go left since the left side contains the larger elements
             return binarySearch(arr, low, (mid - 1), el, n);
     }
     return -1;
@@ -38,104 +35,118 @@ int binarySearch(const int* arr, int low, int high, int el, int n)
 
 int poisciZBisekcijo(int el, int* a, int n)
 {
-    if (n > 0)
-    {
-        return binarySearch(a, 0, n - 1, el, n);
+    if (n>0){
+        return binarySearch(a, 0, n-1, el, n);
     }
 
-    return -1;
+	return -1;
 }
 
-int* merge(int* a, int sizeA, int* b, int sizeB)
-{
-    int* result = new int[sizeA + sizeB];
-    int indexA = 0, indexB = 0, indexResult = 0;
+int* merge(int* sortedArray, int sortedSize, int* strandArray, int strandSize){
+    int* result = new int[sortedSize + strandSize];
+    int indexSorted = 0, indexStrand = 0, indexResult = 0;
 
-    while (indexA < sizeA && indexB < sizeB)
-    {
-        if (a[indexA] > b[indexB])
-        {
-            result[indexResult++] = a[indexA++];
-        }
-        else
-        {
-            result[indexResult++] = b[indexB++];
+    while (indexSorted < sortedSize && indexStrand < strandSize) {
+        if (sortedArray[indexSorted] >= strandArray[indexStrand]) {
+            result[indexResult++] = sortedArray[indexSorted++];
+        } else {
+            result[indexResult++] = strandArray[indexStrand++];
         }
     }
 
-    // Copy any remaining elements
-    while (indexA < sizeA)
-    {
-        result[indexResult++] = a[indexA++];
+    //Dokler ni sortedArray prazen
+    while (indexSorted < sortedSize) {
+        result[indexResult++] = sortedArray[indexSorted++];
     }
-    while (indexB < sizeB)
-    {
-        result[indexResult++] = b[indexB++];
+    //Dokler ni strandArray prazen
+    while (indexStrand < strandSize) {
+        result[indexResult++] = strandArray[indexStrand++];
     }
 
     return result;
 }
 
-void reverseArray(int* arr, int size)
-{
-    for (int i = 0; i < size / 2; i++)
-    {
-        swap(arr[i], arr[size - 1 - i]);
+void reverseArray(int* arr, int size){
+    for(int i = 0; i<size/2; i++){
+        swap(arr[i], arr[size-1-i]);
     }
+}
+
+void removeFromArray(int* &arr, int &arrSize, const int* indicesToRemove, int numIndices) {
+    if (numIndices <= 0 || arrSize <= 0) return;
+
+    int newSize = arrSize - numIndices;
+
+    int* newArr = new int[newSize];
+
+    for (int i = 0, j = 0, removalIndex = 0; i < arrSize; ++i) {
+        if (removalIndex < numIndices && i == indicesToRemove[removalIndex]) {
+            ++removalIndex;
+        } else {
+            newArr[j++] = arr[i];
+        }
+    }
+
+    delete[] arr;
+    arr = newArr;
+    arrSize = newSize;
 }
 
 int* urediSPrameni(int* a, int n)
 {
-    if (n <= 0)
-    {
+    if(n <= 0){
         return NULL;
+    }
+
+    int* arrCpy = new int[n];
+    for(int i = 0; i<n; i++){
+        arrCpy[i] = a[i];
     }
 
     int* sorted = new int[n];
     int sortedSize = 0;
 
-    while (n > 0)
-    {
+    while (n > 0) {
         int* strand = new int[n];
+        int* removeIndex = new int[n];
+        int removeIndexSize = 0;
         int strandSize = 1;
-        strand[0] = a[0];
-
-        int last = a[0];
+        strand[0] = arrCpy[0];
+        removeIndex[removeIndexSize++] = 0;
+        int last = arrCpy[0];
         int index = 1;
 
-        for (int i = 1; i < n; i++)
-        {
-            if (a[i] >= last)
-            {
-                strand[strandSize++] = a[i];
-                last = a[i];
-            }
-            else
-            {
-                a[index++] = a[i];
+        for (int i = 1; i < n; i++) {
+            if (arrCpy[i] <= last) {
+                strand[strandSize++] = arrCpy[i];
+                last = arrCpy[i];
+                removeIndex[removeIndexSize++] = i;
+            } else {
+                a[index++] = arrCpy[i];
             }
         }
         int* newSorted = merge(sorted, sortedSize, strand, strandSize);
         delete[] sorted;
         sorted = newSorted;
         sortedSize += strandSize;
-        n = index - 1;
-
+        removeFromArray(arrCpy, n, removeIndex, removeIndexSize);
+        delete[] removeIndex;
         delete[] strand;
     }
-    reverseArray(sorted, sortedSize);
+    delete[] arrCpy;
     return sorted;
 }
+
 
 #ifndef DTTESTING
 int main()
 {
     // Priprava vhodnih podatkov
-    int vhod[] = {-10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10};
+    int vhod[] = { -10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10 };
     const int dolzina = sizeof(vhod) / sizeof(int);
 
     // Priprava izhodnih podatkov
-    int pricakovan_izhod[] = {10, 8, 6, 4, 2, 0, -2, -4, -6, -8, -10};
+    int pricakovan_izhod[] = { 10, 8, 6, 4,2, 0, -2, -4, -6, -8, -10 };
 
     // Klic testirane metode
     int* dobljen_izhod = urediSPrameni(vhod, dolzina);
