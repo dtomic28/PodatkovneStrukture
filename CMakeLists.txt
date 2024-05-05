@@ -7,7 +7,7 @@ Include(FetchContent)
 FetchContent_Declare(
         Catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-        GIT_TAG        v3.4.0
+        GIT_TAG v3.4.0
 )
 
 FetchContent_MakeAvailable(Catch2)
@@ -23,3 +23,11 @@ target_link_libraries(Naloga1Test PRIVATE Catch2::Catch2WithMain)
 target_compile_definitions(Naloga1Test PRIVATE DTTESTING)
 
 
+add_executable(Naloga2 Naloga2/Tomic_Danijel_1002619122_N2.cpp
+        Naloga2/Naloga2.h)
+
+add_executable(Naloga2Test Naloga2/Naloga2Test.cpp Naloga2/Tomic_Danijel_1002619122_N2.cpp Naloga2/Naloga2.h)
+target_link_libraries(Naloga2Test PRIVATE Catch2::Catch2WithMain)
+target_compile_definitions(Naloga2Test PRIVATE DTTESTING)
+
+add_executable(Naloga3 Naloga3/Tomic_Danijel_1002619122_N3.cpp)
