@@ -238,7 +238,7 @@ public:
             prtljaznik.pop();
             while (!paleta.empty())
             {
-                paleta.push(paleta.top());
+                result.push(paleta.top());
                 paleta.pop();
             }
         }
