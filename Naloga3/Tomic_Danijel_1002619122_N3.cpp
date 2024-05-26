@@ -238,7 +238,7 @@ public:
             prtljaznik.pop();
             while (!paleta.empty())
             {
-                paleta.push(paleta.top());
+                result.push(paleta.top());
                 paleta.pop();
             }
         }
@@ -265,7 +265,7 @@ public:
     {
         while (!potniki.empty())
         {
-            auto& temp = potniki.front();
+            KartaZaVkrcavanje temp = potniki.front();
             potniki.pop();
             switch (temp.getRazredSedeza())
             {

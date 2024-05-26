@@ -31,3 +31,5 @@ target_link_libraries(Naloga2Test PRIVATE Catch2::Catch2WithMain)
 target_compile_definitions(Naloga2Test PRIVATE DTTESTING)
 
 add_executable(Naloga3 Naloga3/Tomic_Danijel_1002619122_N3.cpp)
+
+add_executable(Naloga4 Naloga4/Tomic_Danijel_1002619122_N4.cpp)
